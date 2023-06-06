@@ -1,0 +1,66 @@
+import requests
+
+# url = "https://api.opensea.io/v2/listings/collection/slug/all"
+# url = "https://api.opensea.io/v2/listings/collection/cool-cats-nft/all"
+
+offset = 0
+limit = 50
+all_assets_count = 0
+
+collections_url = "https://api.opensea.io/api/v1/collections?offset={}&limit={}"
+collection_url = "https://api.opensea.io/api/v1/collection/{}"
+
+headers = {
+    "accept": "application/json",
+    "X-API-KEY": "609c816a67654d2fa8413c364469a8c1"
+}
+
+multi_artist_collections = []
+index = 0
+
+while True:
+    response = requests.get(collections_url.format(offset, limit), headers=headers)
+
+    if response.status_code == 200:
+        index += 1
+        collection_list = response.json()['collections']
+        for collection in collection_list:
+            # print(collection['name'], collection['slug'])
+            response = requests.get(collection_url.format(collection['slug']))
+            if response.status_code == 200:
+                collection_info = response.json()['collection']
+                asset_contracts = collection_info['primary_asset_contracts']
+
+                if len(asset_contracts) > 1:
+                    
+                    artists = set()
+                    for contract in asset_contracts:
+                        artist_name = contract['artist_name']
+                        if artist_name:
+                            artists.add(artist_name)
+                        print(artist_name)
+                        print(f"Name: {collection_info['name']}")
+                        print(f"The following artists are associated with {collection['slug']}:")
+                        exit()
+                else:
+                    print(index)
+                    print("Getting the next collection")
+                    break
+            else:
+                print("Error retrieving collection info")
+    else:
+        print("Error retrieving collections")
+
+    offset += limit
+
+    if len(collection_list) < limit:
+        break
+
+# headers = {
+#     "accept": "application/json",
+#     "X-API-KEY": "609c816a67654d2fa8413c364469a8c1"
+# }
+
+# response = requests.get(url, headers=headers)
+
+# print(response.text)
