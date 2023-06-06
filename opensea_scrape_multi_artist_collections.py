@@ -21,17 +21,23 @@ headers = {
 multi_artist_collections = []
 index = 0
 
+proxy_url = '193.149.225.224:80'
+proxies = {
+    'http': proxy_url,
+    'https': proxy_url
+}
+
 output_file = 'opensea_multi_artist_collections.csv'
 
 while True:
-    response = requests.get(collections_url.format(offset, limit), headers=headers)
+    response = requests.get(collections_url.format(offset, limit), headers=headers, proxies=proxies)
 
     if response.status_code == 200:
         index += 1
         collection_list = response.json()['collections']
         for collection in collection_list:
             # print(collection['name'], collection['slug'])
-            response = requests.get(collection_url.format(collection['slug']))
+            response = requests.get(collection_url.format(collection['slug']), proxies=proxies)
             if response.status_code == 200:
                 collection_info = response.json()['collection']
                 asset_contracts = collection_info['primary_asset_contracts']
