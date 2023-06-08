@@ -11,7 +11,6 @@ all_assets_count = 0
 multi_artist_collections = []
 index = 0
 
-collections_url = "https://api.opensea.io/api/v1/collections?offset={}&limit={}"
 collection_url = "https://api.opensea.io/api/v1/collection/{}"
 
 headers = {
@@ -19,62 +18,43 @@ headers = {
     "X-API-KEY": "609c816a67654d2fa8413c364469a8c1"
 }
 
-output_file = 'opensea_multi_artist_collections.csv'
 slugs_file = 'slugs.csv'
+output_file = 'opensea_multi_artist_collections.csv'
 
-# session = requests.session()
 slugs = []
-while True:
-    # proxy = random.choice(proxies)
 
-    # session = requests.session()
-    # session.proxies = proxy
-    time.sleep(1)
-    response = requests.get(collections_url.format(offset, limit), headers=headers)
+with open(slugs_file, newline='') as csvfile:
+    reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+    for row in reader:
+        slugs.append(row)
 
+for slug in slugs:
+    # print(slug[0])
+
+    url = collection_url.format(slug[0])
+    response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        collection_list = response.json()['collections']
-        for collection in collection_list:
-            if collection['slug']:
-                print(collection['slug'])
-                with open(slugs_file, mode='a', newline='') as file:
-                    writer = csv.writer(file)
-                    writer.writerow([collection['slug']])
-                slugs.append(collection['slug'])
-                index += 1
-            print(index)
-            
-            # response = session.get(collection_url.format(collection['slug']))
+        collection_info = response.json()
 
-            # if response.status_code == 200:
-            #     collection_info = response.json()['collection']
-            #     asset_contracts = collection_info['primary_asset_contracts']
+        if "primary_asset_contracts" in collection_info['collection']:
+            collection = collection_info['collection']["primary_asset_contracts"]
+        else:
+            print("There is no primary asset contract in this collection. Skipping...")
+            break
+        
+        artist_set = set()
+        if "created_by" in collection:
+            created_by = collection["created_by"]
+            for artist in created_by:
+                artist_set.add(artist["user"]["username"])
+        else:
+            print("There is no created_by in this collection. Skipping...")
 
-            #     if len(asset_contracts) > 1:
-            #         artists = set()
-            #         for contract in asset_contracts:
-            #             artist_name = contract['artist_name']
-            #             if artist_name:
-            #                 artists.add(artist_name)
-            #             print(artist_name)
-            #             print(f"Name: {collection_info['name']}")
-            #             print(f"The following artists are associated with {collection['slug']}:")
-                        # with open(output_file, mode='a', newline='') as file:
-                        #     writer = csv.writer(file)
-                        #     writer.writerow([collection_info])
-            #             exit()
-            #     else:
-            #         print(index)
-            #         print("Getting the next collection")
-            #         break
-            # else:
-            #     print("Error with collection")
-            #     exit()
+        if len(artist_set) > 1:
+            print(f"The '{slug[0]}' collection has {len(artist_set)} different artists contributing to its assets.")
+        elif len(artist_set) == 1:
+            print(f"The '{slug[0]}' collection has only one artist.")
+        else:
+            print(f"No artist information found for the '{slug[0]}' collection.")
     else:
-        print(index)
-        print("Error retrieving collections")
-        exit()
-    offset += limit
-
-    if len(collection_list) < limit:
-        exit()
+        print(f"Error requesting {url}. Status code: {response.status_code}")
