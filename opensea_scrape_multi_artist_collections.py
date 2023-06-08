@@ -65,16 +65,24 @@ with open(slugs_file, newline='') as csvfile:
     #     print(f"No artist information found for the '{slug[0]}' collection.")
 # else:
 #     print(f"Error requesting {url}. Status code: {response.status_code}")
-
-for slug in slugs:
-    print(slug[0])
+failed_attempts = 0
+for slug in slugs[10204:]:
     i +=1
-    if i % 50 == 0:
-        print("------------------- 3 Seconds Delaying------------------")
-        time.sleep(3)
+    print(i)
+    print(slug[0])
+
+    # if i % 50 == 0:
+    #     print("------------------- 3 Seconds Delaying------------------")
+    #     time.sleep(3)
 
     url = collection_url.format(slug[0])
+    time.sleep(0.5)
     response = requests.get(url, headers=headers)
+    
+    if response.status_code == 429:
+        failed_attempts += 1
+        if failed_attempts == 3:
+            exit()
     if response.status_code == 200:
         collection_info = response.json()
 
@@ -90,7 +98,7 @@ for slug in slugs:
             # artist_set.add(slug[0])
             with open('target.csv', mode='a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(slug[0])
+                writer.writerow([slug[0]])
         else:
             print(f"The '{slug[0]}' collection has only one artist.")
     else:
