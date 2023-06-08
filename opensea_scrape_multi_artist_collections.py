@@ -22,6 +22,7 @@ slugs_file = 'slugs.csv'
 output_file = 'opensea_multi_artist_collections.csv'
 
 slugs = []
+i = 0
 
 with open(slugs_file, newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='"')
@@ -30,7 +31,10 @@ with open(slugs_file, newline='') as csvfile:
 
 for slug in slugs:
     # print(slug[0])
-
+    i +=1
+    if i % 50 == 0:
+        time.sleep(1)
+    
     url = collection_url.format(slug[0])
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
