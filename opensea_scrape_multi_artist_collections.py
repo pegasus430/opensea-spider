@@ -20,6 +20,7 @@ headers = {
 }
 
 output_file = 'opensea_multi_artist_collections.csv'
+slugs_file = 'slugs.csv'
 
 # session = requests.session()
 slugs = []
@@ -36,6 +37,9 @@ while True:
         for collection in collection_list:
             if collection['slug']:
                 print(collection['slug'])
+                with open(slugs_file, mode='a', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([collection['slug']])
                 slugs.append(collection['slug'])
                 index += 1
             print(index)
@@ -55,9 +59,9 @@ while True:
             #             print(artist_name)
             #             print(f"Name: {collection_info['name']}")
             #             print(f"The following artists are associated with {collection['slug']}:")
-            #             with open(output_file, mode='a', newline='') as file:
-            #                 writer = csv.writer(file)
-            #                 writer.writerow([collection_info])
+                        # with open(output_file, mode='a', newline='') as file:
+                        #     writer = csv.writer(file)
+                        #     writer.writerow([collection_info])
             #             exit()
             #     else:
             #         print(index)
