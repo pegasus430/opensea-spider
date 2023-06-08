@@ -93,3 +93,5 @@ for slug in slugs:
                 writer.writerow(slug[0])
         else:
             print(f"The '{slug[0]}' collection has only one artist.")
+    else:
+        print(f"Error requesting. Status code: {response.status_code}")
