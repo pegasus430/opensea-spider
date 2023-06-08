@@ -5,7 +5,7 @@ import json
 import random
 import time
 
-offset = 0
+offset = 50050
 limit = 50
 all_assets_count = 0
 multi_artist_collections = []
@@ -29,7 +29,7 @@ while True:
 
     # session = requests.session()
     # session.proxies = proxy
-    time.sleep(30)
+    time.sleep(1)
     response = requests.get(collections_url.format(offset, limit), headers=headers)
 
     if response.status_code == 200:
