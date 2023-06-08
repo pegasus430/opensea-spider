@@ -28,7 +28,7 @@ while True:
 
     # session = requests.session()
     # session.proxies = proxy
-    time.sleep(3)
+    time.sleep(30)
     response = requests.get(collections_url.format(offset, limit), headers=headers)
 
     if response.status_code == 200:
