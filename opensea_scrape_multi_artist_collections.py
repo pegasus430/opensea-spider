@@ -82,10 +82,10 @@ i = 0
 #     time.sleep(0.3)
 #     response = requests.get(url, headers=headers)
     
-#     if response.status_code == 429:
-#         failed_attempts += 1
-#         if failed_attempts == 30:
-#             exit()
+    # if response.status_code == 429:
+    #     failed_attempts += 1
+    #     if failed_attempts == 30:
+    #         exit()
 #     if response.status_code == 200:
 #         collection_info = response.json()
 
@@ -116,6 +116,7 @@ with open('target.csv', newline='') as csvfile:
 
 for slug in target_slugs:
     url = collection_url.format(slug[0])
+    # time.sleep(1)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         collection_info = response.json()
@@ -127,4 +128,8 @@ for slug in target_slugs:
                 writer.writerow([collection_name])
         else:
             print("There is no primary asset contract in this collection. Skipping...")
+    else:
+        print(f"Error occured.. {response.status_code}")
+        exit()
+
         
