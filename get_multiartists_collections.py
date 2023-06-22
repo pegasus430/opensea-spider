@@ -52,18 +52,18 @@ i = 0
 #             writer.writerow(slug[0])
 #     else:
 #         print(f"The '{slug[0]}' collection has only one artist.")
-    # if "created_by" in collection:
-    #     created_by = collection["created_by"]
-    #     for artist in created_by:
-    #         artist_set.add(artist["user"]["username"])
-    #     if len(artist_set) > 1:
-    #         print(f"The '{slug[0]}' collection has {len(artist_set)} different artists contributing to its assets.")
-    #     elif len(artist_set) == 1:
-    #         print(f"The '{slug[0]}' collection has only one artist.")
-    #     else:
-    #         print(f"///////No artist information found for the '{slug[0]}' collection.///////")
-    # else:
-    #     print(f"No artist information found for the '{slug[0]}' collection.")
+#     if "created_by" in collection:
+#         created_by = collection["created_by"]
+#         for artist in created_by:
+#             artist_set.add(artist["user"]["username"])
+#         if len(artist_set) > 1:
+#             print(f"The '{slug[0]}' collection has {len(artist_set)} different artists contributing to its assets.")
+#         elif len(artist_set) == 1:
+#             print(f"The '{slug[0]}' collection has only one artist.")
+#         else:
+#             print(f"///////No artist information found for the '{slug[0]}' collection.///////")
+#     else:
+#         print(f"No artist information found for the '{slug[0]}' collection.")
 # else:
 #     print(f"Error requesting {url}. Status code: {response.status_code}")
 
@@ -82,10 +82,10 @@ i = 0
 #     time.sleep(0.3)
 #     response = requests.get(url, headers=headers)
     
-    # if response.status_code == 429:
-    #     failed_attempts += 1
-    #     if failed_attempts == 30:
-    #         exit()
+#     if response.status_code == 429:
+#         failed_attempts += 1
+#         if failed_attempts == 30:
+#             exit()
 #     if response.status_code == 200:
 #         collection_info = response.json()
 
